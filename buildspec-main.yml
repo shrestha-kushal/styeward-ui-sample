@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  shell: bash
+
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      python: 3.7
+    commands:
+      - curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh -s -- -y
+      - source "$HOME/.cargo/env"
+      - rustup update
+      - rustup target add wasm32-unknown-unknown
+      - cargo install trunk
+      - apt-get -y install gettext-base
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - aws ecr get-login-password --region $CDK_DEFAULT_REGION | 
+        docker login --username AWS --password-stdin $CDK_DEFAULT_ACCOUNT.dkr.ecr.$CDK_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME
+  build:
+    on-failure: ABORT
+    commands:
+      - cp $CODEBUILD_SRC_DIR/js/config-main.js $CODEBUILD_SRC_DIR/js/config.js
+      - trunk build --release --public-url /site
+      - export IMAGE_TAG=$$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker build --no-cache --progress plain -t $ECR_REPO_NAME:$IMAGE_TAG -f $CODEBUILD_SRC_DIR/Dockerfile .
+      - docker tag $ECR_REPO_NAME:$IMAGE_TAG $CDK_DEFAULT_ACCOUNT.dkr.ecr.$CDK_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:$IMAGE_TAG
+    finally:
+      - echo "Nothing to clean up."
+  post_build:
+    on-failure: ABORT
+    commands:
+      - docker push $CDK_DEFAULT_ACCOUNT.dkr.ecr.$CDK_DEFAULT_REGION.amazonaws.com/$ECR_REPO_NAME:$IMAGE_TAG

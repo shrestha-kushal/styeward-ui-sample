@@ -1,0 +1,31 @@
+.nav-link a {
+    color: white !important;
+    text-decoration: none;
+}
+
+.nav-link a:hover {
+    color: palevioletred !important;
+    text-decoration: underline;
+}
+
+.ag-theme-alpine {
+    --ag-header-foreground-color: white;
+    --ag-header-background-color: #222529;
+}
+
+.ag-theme-alpine .ag-header-group-cell {
+    font-weight: normal;
+    font-size: 22px;
+}
+
+.ag-theme-alpine .ag-header-cell {
+    font-size: 16px;
+}
+
+.current-selection {
+    background-color: white;
+    min-width: 100px;
+    border: 1px solid black;
+    padding: 5px;
+    display: inline-block;
+}

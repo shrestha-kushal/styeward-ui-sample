@@ -1,0 +1,38 @@
+[package]
+name = "styeward"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+yew = {version = "0.20", features = ["csr"]}
+yew-router = "0.17.0"
+http = "*"
+serde = { version = "*", features = ["derive"] }
+serde_derive = "*"
+serde_json = "*"
+wasm-bindgen-futures = "*"
+wasm-logger = "*"
+log = "*"
+gloo-utils = { version="*", features = ["serde"]}
+wasm-bindgen = { version="*", features = ["serde-serialize"]  }
+gloo-net = { version = "*", features = ["http"] }
+futures = "*"
+serde-wasm-bindgen = "*"
+url = "*"
+
+[dependencies.web-sys]
+version = "0.3.60"
+features = [
+    "HtmlSelectElement",
+    "HtmlOptionElement",
+    "HtmlElement",
+    "Request",
+    "RequestInit",
+    "RequestMode"
+]
+
+[dev-dependencies]
+partial_application = "*"
+wasm-bindgen-test = "*"
+rand = "*"
+getrandom = {version = "*", features=["js"]}
